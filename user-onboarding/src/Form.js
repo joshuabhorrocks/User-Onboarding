@@ -30,6 +30,8 @@ export default function Form() {
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [post, setPost] = useState([]);
 
+    const [users, setUsers] = useState([]);
+
     useEffect(() => {
     formSchema.isValid(formState).then(valid => {
         setButtonDisabled(!valid);
@@ -56,6 +58,14 @@ export default function Form() {
     
     const formSubmit = event => {
     event.preventDefault();
+    const newUsers = {
+        name: formState.name,
+        email: formState.email,
+        password: formState.password,
+        terms: formState.terms
+    }
+    setUsers([...users, newUsers]);
+    console.log(users)
     axios
         .post("https://reqres.in/api/users", formState)
         .then(res => {
@@ -85,6 +95,7 @@ export default function Form() {
     };
 
     return (
+    <div>
     <form onSubmit={formSubmit}>
         <label htmlFor="name">
         Name
@@ -132,5 +143,12 @@ export default function Form() {
         <pre>{JSON.stringify(post, null, 2)}</pre>
         <button disabled={buttonDisabled}>Submit</button>
     </form>
+        <div>
+        <h3>List of Profiles: </h3>
+            {
+                users.map(user => <div key={user.id}>{user.name} {user.email} {user.password}</div>)
+            }
+        </div>
+    </div>
     );
 }
